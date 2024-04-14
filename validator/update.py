@@ -32,7 +32,7 @@ def get_xrpl_server_info(key, timenow):
         version = server_info_data['result']['info']['build_version']
         status_time = int(server_info_data['result']['info']['server_state_duration_us']) / 1000000
         node_size = server_info_data['result']['info']['node_size']
-        ledger = server_info_data['result']['info']['validated_ledger']['seq']
+        ledger = server_info_data['result']['info'].get('validated_ledger', {}).get('seq', 0)
         ledgers = server_info_data['result']['info']['complete_ledgers']
         peers = server_info_data['result']['info']['peers']
         network = server_info_data['result']['info'].get('network_id', 0) # Mainnet doesn't provide a network id, so default 0
@@ -94,7 +94,7 @@ KEY = "{key}"
             return status_output
     
     except Exception as e:
-        print("oops: error with creating status_ouput")
+        print("oops: error with creating status_ouput error:", str(e))
         return str(e)
 
 def send_to_api(data):

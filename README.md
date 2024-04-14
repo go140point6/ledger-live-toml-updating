@@ -22,11 +22,13 @@ Mainnet example here: https://mainnet.validator.report/ and here: https://mainne
 
 Prerequisites:
 
-Python3, mpstat, free, df, awk
+mpstat, free, df, awk, pip
 
-Python3 requires: json, websockets, subprocess, asyncio, requests
+    apt insstall pip mpstat
 
-`pip3 install websockets requests`
+Python3 requires: requests
+
+    `pip3 install requests`
 
 Optional text editor: nano
 
