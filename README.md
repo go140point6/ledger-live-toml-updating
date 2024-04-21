@@ -36,15 +36,16 @@ Upload Pre-existing Files: Upload update.py and listener.py to the validator ser
 
 ### Editing update.py:
 Modify the following lines:
-    xrpl = 'xahaud' # Replace with your XRPL node executable eg. "rippled" or "xahaud"
-    load_type = 'standalone' # 'standalone' when its loaded direct, it then uses a timer to trigger the update, 'listener' when being ran by the listener script to trigger the update.
-    mode = 'node' # 'validator' for validator type, so it checks/logs the AMMENDMENTS, and so it saves toml via API, 'node' has no ammendments and saves locally
-    wait_time = 60 # wait time before re-creating .toml (in seconds)
-    api_url = 'https://yourhost.com/toml.php'  # Replace with your API URL
-    api_key = 'key'  # Replace with your API key, this can be anything you want, you need to update the php script to match
-    file_path = '/home/www/.well-known/xahau.toml' # path to local .toml file, for use in node mode
-    allowlist_path = '/root/xahl-node/nginx_allowlist.conf' # allow list path, for use in connections output (node mode)
-    websocket_port = '6008' # port thats used for websocket (for use in connections, in node mode)
+
+ - `xrpl` = 'xahaud' # Replace with your XRPL node executable eg. "rippled" or "xahaud"
+ - `load_type` = 'standalone' # 'standalone' when its loaded direct, it then uses a timer to trigger the update, 'listener' when being ran by the listener script to trigger the update.
+ - `mode` = 'node' # 'validator' for validator type, so it checks/logs the AMMENDMENTS, and so it saves toml via API, 'node' has no ammendments and saves locally
+ - `wait_time` = 60 # wait time before re-creating .toml (in seconds)
+ - `api_url` = 'https://yourhost.com/toml.php'  # Replace with your API URL
+ - `api_key` = 'key'  # Replace with your API key, this can be anything you want, you need to update the php script to match
+ - `file_path` = '/home/www/.well-known/xahau.toml' # path to local .toml file, for use in node mode
+ - `allowlist_path` = '/root/xahl-node/nginx_allowlist.conf' # allow list path, for use in connections output (node mode)
+ - `websocket_port` = '6008' # port thats used for websocket (for use in connections, in node mode)
 
 ### Editing listener.py for use in `load_type = 'listener' ``:
 Modify the line if necessary:
