@@ -24,11 +24,11 @@ Prerequisites:
 
 mpstat, free, df, awk, pip
 
-    apt insstall pip mpstat
+    apt install pip mpstat
 
 Python3 requires: requests
 
-    `pip3 install requests`
+    `pip3 install requests toml`
 
 Optional text editor: nano
 
@@ -40,7 +40,8 @@ Modify the following lines:
  - `xrpl` = 'xahaud' # Replace with your XRPL node executable eg. "rippled" or "xahaud"
  - `load_type` = 'standalone' # 'standalone' when its loaded direct, it then uses a timer to trigger the update, 'listener' when being ran by the listener script to trigger the update.
  - `mode` = 'node' # 'validator' for validator type, so it checks/logs the AMMENDMENTS, and so it saves toml via API, 'node' has no ammendments and saves locally
- - `wait_time` = 60 # wait time before re-creating .toml (in seconds)
+ - `wait_time` = 900 # wait time before re-creating .toml (in seconds)
+ - `data_point_amount` = 6 # amount of data points to collect, for showing in graph
  - `api_url` = 'https://yourhost.com/toml.php'  # Replace with your API URL
  - `api_key` = 'key'  # Replace with your API key, this can be anything you want, you need to update the php script to match
  - `file_path` = '/home/www/.well-known/xahau.toml' # path to local .toml file, for use in node mode
