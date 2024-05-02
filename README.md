@@ -1,13 +1,12 @@
-Use your validator to send information to your webhost to update your toml file, then create a landing page based on the data found in your toml file.
+Use your validator/Node to send information to your webhost to update your toml file, then create a landing page based on the data found in your toml file.
 
 No connection (no holes) to your validator or node,
 
-update every key ledger (or whenever you want) via listener.py
+update every promt from ledger activitiy (via key ledger by default) via the listener.py module
 
-or timed intervals, by setting 'load-type' within in the update.py file, and loading direct, instead of listener.
+or in timed intervals, by setting 'load-type' within in the update.py file to standalone, and running the update.py direct (instead of listener.py)
 
-
-Be more transparent. Display your validator info, load, amendments, organization and principle. Hands free.
+Be more transparent. Display your validator info, load, amendments, organization and principle. all Hands free, and automatted
 
 Works on xrpl mainnet, xahau, testnet
 
@@ -16,23 +15,24 @@ Xahau example here: https://xahau.validator.report/ or https://xahau.zerp.networ
 Mainnet example here: https://mainnet.validator.report/ and here: https://mainnet2.validator.report/
 
 
-# Setup Instructions - Validator and Web Host Configuration
+# Setup Instructions
 
 # Part 1: Validator/Node Server Setup
 
 Prerequisites:
 
-mpstat, free, df, awk, pip
+free, df, awk, pip
 
-    apt install pip mpstat
+    sudo apt install pip 
 
 Python3 requires: requests
 
-    `pip3 install requests toml`
+    `sudo pip3 install requests toml`
 
 Optional text editor: nano
 
-Upload Pre-existing Files: Upload update.py and listener.py to the validator server or use nano to create these files and paste the contents accordingly
+If you want to use JUST for you Node, then you can do that by JUST using the updater.py file.
+Upload Pre-existing Files: Upload update.py and listener.py to the validator server or use nano to create these files and paste the contents accordingly, or you can git clone.
 
 ### Editing update.py:
 Modify the following lines:
