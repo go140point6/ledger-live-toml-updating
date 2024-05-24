@@ -104,6 +104,7 @@ def get_xrpl_server_info(key, timenow):
 
         status_output = f"""
 STATUS = "{status}"
+FULLCOUNT = "{status_count}"
 BUILDVERSION = "{version}"
 LASTREFRESH = "{timenow}Z UTC"
 UPTIME = "{formatted_uptime}"
