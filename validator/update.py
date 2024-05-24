@@ -27,7 +27,6 @@ def run_command(command):
         return str(e)
 
 def get_xrpl_server_info(key, timenow):
-    print("hi?")
     try:
         server_info_result = subprocess.run([xrpl, "server_info"], capture_output=True, text=True)
         server_info_data = json.loads(server_info_result.stdout)
