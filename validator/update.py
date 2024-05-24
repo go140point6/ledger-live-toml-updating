@@ -9,7 +9,7 @@ import toml
 
 # You can change these variables to match your setup
 xrpl = 'xahaud' # Replace with your XRPL node executable eg. "rippled" or "xahaud"
-load_type = 'standalone' # 'standalone' when its loaded direct, it then uses a timer to trigger the update, 'listener' when being ran by the listener script to trigger the update.
+load_type = 'listener' # 'standalone' when its loaded direct, it then uses a timer to trigger the update, 'listener' when being ran by the listener script to trigger the update.
 mode = 'node' # 'validator' for validator type, so it checks/logs the AMMENDMENTS, and so it saves toml via API, 'node' has no ammendments and saves locally
 wait_time = 900 # wait time before re-creating .toml (in seconds)
 data_point_amount = 6 # amount of data points to collect, for showing in graph
@@ -33,6 +33,7 @@ def get_xrpl_server_info(key, timenow):
         server_info_data = json.loads(server_info_result.stdout)
 
         status = server_info_data['result']['info']['server_state']
+        status_count = server_info_data['result']['info']['state_accounting']['full']['transitions']
         version = server_info_data['result']['info']['build_version']
         status_time = int(server_info_data['result']['info']['server_state_duration_us']) / 1000000
         node_size = server_info_data['result']['info']['node_size']
@@ -46,34 +47,6 @@ def get_xrpl_server_info(key, timenow):
         hours = (uptime_in_seconds % 86400) // 3600
         minutes = (uptime_in_seconds % 3600) // 60
         formatted_uptime = f"{days} Days, {str(hours).zfill(2)} Hours, and {str(minutes).zfill(2)} Mins"
-        
-        # extract data from .toml file, to append to, also force string to list
-        toml_data = toml.load(toml_path)
-        cpu_data = ast.literal_eval(toml_data.get('STATUS')[0].get('CPU',"[]"))
-        ram_data = ast.literal_eval(toml_data.get('STATUS')[0].get('RAM',"[]"))
-        hdd_data = ast.literal_eval(toml_data.get('STATUS')[0].get('HDD',"[]"))
-        swp_data = ast.literal_eval(toml_data.get('STATUS')[0].get('SWP',"[]"))
-        time_data = ast.literal_eval(toml_data.get('STATUS')[0].get('TIME',"[]"))
-
-        cpu_usage_current = run_command("top -n1 -b -U xahaud | awk '/" + xrpl + "/{print $9}'")
-        cpu_data.append(cpu_usage_current)
-        if len(cpu_data) > data_point_amount: cpu_data.pop(0)
-
-        ram_usage_current = run_command("free | awk '/Mem:/ {printf(\"%.2f\"), $3/$2 * 100}'")
-        ram_data.append(ram_usage_current)
-        if len(ram_data) > data_point_amount: ram_data.pop(0)
-
-        hdd_usage_current = run_command("df -h . | awk 'NR==2{print $5}'")
-        hdd_data.append(hdd_usage_current)
-        if len(hdd_data) > data_point_amount: hdd_data.pop(0)
-
-        swp_usage_current = run_command("free | awk '/Swap:/ {printf(\"%.2f%\"), $3/$2 * 100}'")
-        swp_data.append(swp_usage_current)
-        if len(swp_data) > data_point_amount: swp_data.pop(0)
-
-        time_usage_current = timenow.strftime("%H:%M")
-        time_data.append(time_usage_current)
-        if len(time_data) > data_point_amount: time_data.pop(0)
 
         if type == 'validator':
             feature_result = subprocess.run([xrpl, "feature"], capture_output=True, text=True)
@@ -94,6 +67,41 @@ def get_xrpl_server_info(key, timenow):
             websocket_connections = int(run_command( "netstat -an | grep " + websocket_port + " | wc -l | awk '{print int(($1 - 1) / 2)}'" )) # we subtract 1 (the node itself) and then divide by two, as it lists the proxy AND node seperately
             allowlist_count = int(run_command ( "wc -l " + allowlist_path + " | awk '{print $1}' " )) - 2 # we -2 here as 2 entries out of the 3 default entries that are created on install are for the node itself
 
+        # extract data from .toml file, to append to, also force string to list
+        toml_data = toml.load(toml_path)
+        cpu_data = ast.literal_eval(toml_data.get('STATUS')[0].get('CPU',"[]"))
+        ram_data = ast.literal_eval(toml_data.get('STATUS')[0].get('RAM',"[]"))
+        hdd_data = ast.literal_eval(toml_data.get('STATUS')[0].get('HDD',"[]"))
+        swp_data = ast.literal_eval(toml_data.get('STATUS')[0].get('SWP',"[]"))
+        status_count_data = ast.literal_eval(toml_data.get('STATUS')[0].get('STATUS_COUNT',"[]"))
+        wss_connect_data = ast.literal_eval(toml_data.get('STATUS')[0].get('WSS_CONNECTS',"[]"))
+        time_data = ast.literal_eval(toml_data.get('STATUS')[0].get('TIME',"[]"))
+
+        cpu_usage_current = run_command("top -n1 -b -U xahaud | awk '/" + xrpl + "/{print $9}'")
+        cpu_data.append(cpu_usage_current)
+        if len(cpu_data) > data_point_amount: cpu_data.pop(0)
+
+        ram_usage_current = run_command("free | awk '/Mem:/ {printf(\"%.2f\"), $3/$2 * 100}'")
+        ram_data.append(ram_usage_current)
+        if len(ram_data) > data_point_amount: ram_data.pop(0)
+
+        hdd_usage_current = run_command("df -h . | awk 'NR==2{print $5}'")
+        hdd_data.append(hdd_usage_current)
+        if len(hdd_data) > data_point_amount: hdd_data.pop(0)
+
+        swp_usage_current = run_command("free | awk '/Swap:/ {printf(\"%.2f%\"), $3/$2 * 100}'")
+        swp_data.append(swp_usage_current)
+        if len(swp_data) > data_point_amount: swp_data.pop(0)
+
+        status_count_data.append(status_count)
+        if len(status_count_data) > data_point_amount: status_count_data.pop(0)
+
+        wss_connect_data.append(websocket_connections)
+        if len(wss_connect_data) > data_point_amount: wss_connect_data.pop(0)
+
+        time_usage_current = timenow.strftime("%H:%M")
+        time_data.append(time_usage_current)
+        if len(time_data) > data_point_amount: time_data.pop(0)
 
         status_output = f"""
 STATUS = "{status}"
@@ -112,6 +120,8 @@ CPU = "{cpu_data}"
 RAM = "{ram_data}"
 HDD = "{hdd_data}"
 SWP = "{hdd_data}"
+STATUS_COUNT = "{status_count_data}"
+WSS_CONNECTS = "{wss_connect_data}"
 TIME = "{time_data}"
 
 KEY = "{key}"
@@ -182,4 +192,5 @@ if __name__ == "__main__":
         while True:
             info = get_xrpl_server_info(False, datetime.utcnow())
             update_toml_file(info, datetime.utcnow())
-            time.sleep(wait_time)
+            if load_type == 'listener': break
+            else: time.sleep(wait_time)
