@@ -8,10 +8,10 @@ import time
 import toml
 
 # You can change these variables to match your setup
-xrpl = 'xahaud' # Replace with your XRPL node executable eg. "rippled" or "xahaud"
+xrpl = '/opt/xahaud/bin/xahaud' # Replace with your XRPL node executable eg. "/opt/rippled/bin/rippled" or "/opt/xahaud/bin/xahaud"
 load_type = 'listener' # 'standalone' when its loaded direct, it then uses a timer to trigger the update, 'listener' when being ran by the listener script to trigger the update.
 mode = 'node' # 'validator' for validator type, so it checks/logs the AMMENDMENTS, and so it saves toml via API, 'node' has no ammendments and saves locally
-wait_time = 900 # wait time before re-creating .toml (in seconds)
+wait_time = 1800 # wait time before re-creating .toml (in seconds)
 data_point_amount = 6 # amount of data points to collect, for showing in graph
 api_url = 'https://yourhost.com/toml.php'  # Replace with your API URL
 api_key = 'key'  # Replace with your API key, this can be anything you want, you need to update the php script to match
