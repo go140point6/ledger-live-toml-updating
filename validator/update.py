@@ -1,6 +1,7 @@
 import ast
 from datetime import datetime
 import json
+import os
 import requests
 import re
 import subprocess
@@ -76,7 +77,7 @@ def get_xrpl_server_info(key, timenow):
         wss_connect_data = ast.literal_eval(toml_data.get('STATUS')[0].get('WSS_CONNECTS',"[]"))
         time_data = ast.literal_eval(toml_data.get('STATUS')[0].get('TIME',"[]"))
 
-        cpu_usage_current = run_command("top -n1 -b -U xahaud | awk '/" + xrpl + "/{print $9}'")
+        cpu_usage_current = run_command("top -n1 -b -U xahaud | awk '/" + os.path.basename(xrpl) + "/{print $9}'")
         cpu_data.append(cpu_usage_current)
         if len(cpu_data) > data_point_amount: cpu_data.pop(0)
 
