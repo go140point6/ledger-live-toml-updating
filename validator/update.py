@@ -10,15 +10,15 @@ import toml
 
 # You can change these variables to match your setup
 xrpl = '/opt/xahaud/bin/xahaud' # Replace with your XRPL node executable eg. "/opt/rippled/bin/rippled" or "/opt/xahaud/bin/xahaud"
-load_type = 'listener' # 'standalone' when its loaded direct, it then uses a timer to trigger the update, 'listener' when being ran by the listener script to trigger the update.
+load_type = 'listener' # 'standalone' mode is when its loaded directly, it then uses a timer to trigger the updates, 'listener' mode is for when being ran by the listener/seperate script to trigger the update.
 mode = 'node' # 'validator' for validator type, so it checks/logs the AMMENDMENTS, and so it saves toml via API, 'node' has no ammendments and saves locally
-wait_time = 1800 # wait time before re-creating .toml (in seconds)
-data_point_amount = 6 # amount of data points to collect, for showing in graph
+wait_time = 1800 # Used in 'standalone' mode only, is the wait time before re-creating .toml (in seconds)
+data_point_amount = 48 # amount of data points to collect, for showing in graph
 api_url = 'https://yourhost.com/toml.php'  # Replace with your API URL
 api_key = 'key'  # Replace with your API key, this can be anything you want, you need to update the php script to match
 toml_path = '/home/www/.well-known/xahau.toml' # path to local .toml file, for use in node mode
 allowlist_path = '/root/xahl-node/nginx_allowlist.conf' # allow list path, for use in connections output (node mode)
-websocket_port = '6008' # port thats used for websocket (for use in connections, in node mode)
+websocket_port = '6009' # port thats used for websocket (for use in connections, in node mode)
 
 def run_command(command):
     try:
@@ -33,7 +33,7 @@ def get_xrpl_server_info(key, timenow):
         server_info_data = json.loads(server_info_result.stdout)
 
         status = server_info_data['result']['info']['server_state']
-        status_count = server_info_data['result']['info']['state_accounting']['full']['transitions']
+        status_count = int(server_info_data['result']['info']['state_accounting']['full']['transitions'])
         version = server_info_data['result']['info']['build_version']
         status_time = int(server_info_data['result']['info']['server_state_duration_us']) / 1000000
         node_size = server_info_data['result']['info']['node_size']
